@@ -40,7 +40,7 @@ Aneesh Naresh & Test harness: buffer init, comparison against \texttt{ncclAllRed
 \toprule
 \textbf{Dates} & \textbf{Work} \\
 \midrule
-Oct 26 -- Oct 29 & All: kickoff, read StragglAR code, agree on and freeze the IR format. Wyatt runs StragglAR and writes the sample $n{=}4$ IR. Nathnael gets Perlmutter access for all four members. \\
+Oct 26 -- Oct 29 & All: kickoff, read StragglAR code, agree on and freeze the IR format. Wyatt runs StragglAR and writes the sample $n{=}4$ IR. Nathnael starts the NCCL build and launch script. \\
 Oct 30 -- Nov 8 & In parallel: Wyatt builds parser + simulator; David generates code from the sample IR; Nathnael delivers the launch script (Nov 1) and the 8-GPU send/recv test; Aneesh builds the harness against \texttt{ncclAllReduce}. \\
 \textbf{Nov 9} & \textbf{Midpoint presentation}: schedules for several $n$, the IR, generated code for $n{=}4$ running on one node and passing the harness. Each member presents their stage. \\
 Nov 10 -- Nov 22 & Full pipeline for $n{=}8$ on two nodes. Wyatt and David connect parser to generator; Nathnael and Aneesh run and debug on 8 GPUs. Goal: no deadlock and correct results by Nov 22. \\
