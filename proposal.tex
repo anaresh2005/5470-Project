@@ -15,7 +15,7 @@ Team 31 (Chesterjesters): Wyatt Sell, David Valarezo, Nathnael Tesfaw, Aneesh Na
 Advisor: Arjun Devraj \quad$\cdot$\quad Compute: 2 Perlmutter nodes (8$\times$A100, NCCL over Slingshot)
 \end{center}
 
-\textbf{Goal.} StragglAR's synthesizer outputs AllReduce schedules (which rank sends which chunk to whom, per step) in its own text format, but turning a schedule into runnable NCCL code is done by hand. We will build a compiler that parses the schedule into a documented intermediate representation (IR) and generates a C++/CUDA program of grouped \texttt{ncclSend}/\texttt{ncclRecv} calls with local reductions. Success means the generated program runs without deadlock on 8 GPUs across two nodes, matches NCCL's own AllReduce, and is timed under an injected straggler delay.
+\textbf{Goal.} StragglAR's synthesizer outputs AllReduce schedules (which rank sends which chunk to whom, per step) in its own text format, but turning a schedule into runnable NCCL code is done by hand. We will build a compiler that parses the schedule into a documented intermediate representation (IR) and generates a C++/CUDA program of grouped \texttt{ncclSend}/\texttt{ncclRecv} calls with local reductions. Success means the generated program runs without deadlock on 8 GPUs across two nodes, gives the same output as \texttt{ncclAllReduce}, and, with the same straggler delay injected into both, finishes faster than \texttt{ncclAllReduce}.
 
 \textbf{Pipeline.} StragglAR schedule (text) $\rightarrow$ parser $\rightarrow$ IR (JSON) $\rightarrow$ code generator $\rightarrow$ NCCL program $\rightarrow$ test harness on Perlmutter.
 
@@ -30,7 +30,7 @@ Advisor: Arjun Devraj \quad$\cdot$\quad Compute: 2 Perlmutter nodes (8$\times$A1
 Wyatt Sell & Running StragglAR for $n = 2,4,8,16$; schedule parser; IR design and its written spec; IR simulator that checks a schedule produces a correct AllReduce (CPU only, no GPUs). & Problem, StragglAR background, IR design. \\
 David Valarezo & Code generator: IR $\rightarrow$ C++/CUDA with one \texttt{ncclGroupStart}/\texttt{End} block per step; local reduction kernel; deadlock-free ordering. & Compiler design and a generated-code example. \\
 Nathnael Tesfaw & Perlmutter setup: NCCL build, Makefile, Slurm script for 1 and 2 nodes; a hand-written send/recv test on 8 GPUs; runs all multi-node jobs. & Experimental setup and system details. \\
-Aneesh Naresh & Test harness: buffer init, comparison against \texttt{ncclAllReduce}, straggler delay injection on rank $n{-}1$, timing across delays and buffer sizes; result plots. & Results: correctness and timing vs.\ ring. \\
+Aneesh Naresh & Test harness: buffer init, comparison against \texttt{ncclAllReduce}, straggler delay injection on rank $n{-}1$, timing ours vs.\ \texttt{ncclAllReduce} with the same delay on both; result plots. & Results: correctness and speedup vs.\ \texttt{ncclAllReduce} under a straggler. \\
 \bottomrule
 \end{tabularx}
 
@@ -44,12 +44,12 @@ Oct 26 -- Oct 29 & All: kickoff, read StragglAR code, agree on and freeze the IR
 Oct 30 -- Nov 8 & In parallel: Wyatt builds parser + simulator; David generates code from the sample IR; Nathnael delivers the launch script (Nov 1) and the 8-GPU send/recv test; Aneesh builds the harness against \texttt{ncclAllReduce}. \\
 \textbf{Nov 9} & \textbf{Midpoint presentation}: schedules for several $n$, the IR, generated code for $n{=}4$ running on one node and passing the harness. Each member presents their stage. \\
 Nov 10 -- Nov 22 & Full pipeline for $n{=}8$ on two nodes. Wyatt and David connect parser to generator; Nathnael and Aneesh run and debug on 8 GPUs. Goal: no deadlock and correct results by Nov 22. \\
-Nov 23 -- Dec 1 & Aneesh and Nathnael run timing sweeps (straggler delay $\times$ buffer size) against NCCL ring. Wyatt and David finish the IR docs and clean up the code. Thanksgiving week is slack. \\
+Nov 23 -- Dec 1 & Aneesh and Nathnael time the generated program against \texttt{ncclAllReduce} with the same straggler delay on both (sweeping delay $\times$ buffer size). If we are not faster, Wyatt and David profile and tune the generated code; otherwise they finish the IR docs. Thanksgiving week is slack. \\
 Dec 2 -- Dec 6 & Each member makes their poster panel; Dec 5 full team review and practice. \\
 \textbf{Dec 7} & \textbf{Final poster session.} \\
 \bottomrule
 \end{tabularx}
 
-\textbf{Deliverables.} Schedules for several power-of-two $n$; the compiler with a documented IR; a test showing the generated program runs without deadlock on 8 GPUs across two nodes, matches \texttt{ncclAllReduce}, and is timed under an injected straggler delay.
+\textbf{Deliverables.} Schedules for several power-of-two $n$; the compiler with a documented IR; a test showing the generated program runs without deadlock on 8 GPUs across two nodes, matches \texttt{ncclAllReduce}, and beats it when the same straggler delay is injected into both.
 
 \end{document}
