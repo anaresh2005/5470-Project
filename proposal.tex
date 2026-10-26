@@ -29,7 +29,7 @@ Advisor: Arjun Devraj \quad$\cdot$\quad Compute: 2 Perlmutter nodes (8$\times$A1
 \midrule
 Wyatt Sell & Running StragglAR for $n = 2,4,8,16$; schedule parser; IR design and its written spec; IR simulator that checks a schedule produces a correct AllReduce (CPU only, no GPUs). & Problem, StragglAR background, IR design. \\
 David Valarezo & Code generator: IR $\rightarrow$ C++/CUDA with one \texttt{ncclGroupStart}/\texttt{End} block per step; local reduction kernel; deadlock-free ordering. & Compiler design and a generated-code example. \\
-Nathnael Tesfaw & Perlmutter setup: NCCL build, Makefile, Slurm script for 1 and 2 nodes; a hand-written send/recv test on 8 GPUs; runs all multi-node jobs. & Experimental setup and system details. \\
+Nathnael Tesfaw & NCCL build, Makefile, Slurm script for 1 and 2 nodes; a hand-written send/recv test on 8 GPUs; runs all multi-node jobs. & Experimental setup and system details. \\
 Aneesh Naresh & Test harness: buffer init, comparison against \texttt{ncclAllReduce}, straggler delay injection on rank $n{-}1$, timing ours vs.\ \texttt{ncclAllReduce} with the same delay on both; result plots. & Results: correctness and speedup vs.\ \texttt{ncclAllReduce} under a straggler. \\
 \bottomrule
 \end{tabularx}
