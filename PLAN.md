@@ -60,9 +60,9 @@ By Sat Nov 7:
 
 By Thu Nov 5:
 - [ ] *(blocking)* Confirm all four of us can log in to Perlmutter and that the allocation has GPU hours.
-- [ ] *(blocking)* NCCL (module or build) plus a `Makefile`; compile and run the repo's `allreduce_4GPU.cu` on one node.
-- [ ] *(blocking)* Slurm script for 1 node / 4 GPUs that Aneesh and David can reuse.
-- [ ] Multi-process NCCL setup (one process per GPU, `ncclUniqueId` passed via MPI or a file) with a
+- [X] *(blocking)* NCCL (module or build) plus a `Makefile`; compile and run the repo's `allreduce_4GPU.cu` on one node.
+- [X] *(blocking)* Slurm script for 1 node / 4 GPUs that Aneesh and David can reuse.
+- [X] Multi-process NCCL setup (one process per GPU, `ncclUniqueId` passed via MPI or a file) with a
       hand-written send/recv test on 4 GPUs. Not needed for the midpoint run, but needed for 2 nodes.
 
 By Sat Nov 7:
