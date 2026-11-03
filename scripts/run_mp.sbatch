@@ -27,5 +27,6 @@ export NCCL_DEBUG_SUBSYS=INIT,P2P,NET
 echo "commit: $(git rev-parse --short HEAD)"
 echo "job: $SLURM_JOB_ID on $SLURM_JOB_NODELIST"
 
-# --gpu-bind=none lets every process see all the node's GPUs, so NCCL can use NVLink between them.
+# Every process must see all the node's GPUs: with --gpu-bind=closest, NCCL's direct GPU-to-GPU
+# transfers fail with "invalid device ordinal". The test picks each process's nearest GPU itself.
 srun --gpu-bind=none --cpu-bind=cores build/mp_sendrecv "$COUNT"

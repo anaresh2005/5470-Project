@@ -48,17 +48,21 @@ int main(int argc, char* argv[]) {
     MPI_Abort(MPI_COMM_WORLD, 1);
   }
 
-  // Each process on a node takes a different GPU.
+  // Each process on a node takes a different GPU. Perlmutter numbers GPUs in the opposite order
+  // from CPU groups (GPU 3 is next to CPUs 0-15), so reversing the order keeps each process
+  // next to its GPU.
   int nDevices = 0;
   CHECK_CUDA(cudaGetDeviceCount(&nDevices));
   const char* localId = getenv("SLURM_LOCALID");
-  int device = (localId ? atoi(localId) : 0) % nDevices;
+  int device = nDevices - 1 - (localId ? atoi(localId) : 0) % nDevices;
   CHECK_CUDA(cudaSetDevice(device));
 
   char host[MPI_MAX_PROCESSOR_NAME];
   int hostLen;
   MPI_Get_processor_name(host, &hostLen);
-  printf("Rank %d of %d on %s, GPU %d of %d\n", rank, size, host, device, nDevices);
+  const char* visible = getenv("CUDA_VISIBLE_DEVICES");
+  printf("Rank %d of %d on %s, device %d of %d, CUDA_VISIBLE_DEVICES=%s\n", rank, size, host,
+         device, nDevices, visible ? visible : "unset");
   fflush(stdout);
 
   // Rank 0 creates the ID and MPI gives it to every other process.
