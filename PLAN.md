@@ -20,10 +20,11 @@ and generated code for n=4 running on one node and passing the harness.
 
 - [X] **IR format** (Wyatt proposes, everyone signs off). JSON with `n`, `num_chunks`, and a list of rounds,
       each a list of ops `{"src": int, "dst": int, "chunk": int, "op": "add" | "write"}`.
-- [ ] **Generated-code entry point** (David proposes, Aneesh signs off). For the midpoint, use the same
+- [X] **Generated-code entry point** (David proposes, Aneesh signs off). For the midpoint, use the same
       single-process style as `stragglar/stragglar/allreduce_4GPU.cu` (one process, all GPUs, `ncclCommInitAll`), e.g.
       `void gen_stragglar_allreduce(float** d_buffers, float** d_tempbufs, int* devs, cudaStream_t* streams, ncclComm_t* comms, int numRanks, size_t chunkSize)`.
       This keeps multi-process NCCL off the midpoint critical path; it only matters for 2 nodes.
+      Final signature and calling rules: `gen/gen_stragglar.h`.
 
 ## Wyatt: schedules, parser, IR, simulator, ReduceScatter phase
 
