@@ -29,7 +29,7 @@ and generated code for n=4 running on one node and passing the harness.
 
 By Thu Nov 5:
 - [X] *(blocking)* Hand-write `ir/n4.json` from the n=4 schedule and push it, so David can start before the parser exists.
-- [ ] Run `synthesizer_pow2.py` for n = 4, 8, 16 and commit the outputs to `schedules/` (needs only `numpy`).
+- [X] Run `synthesizer_pow2.py` for n = 4, 8, 16 and commit the outputs to `schedules/` (needs only `numpy`).
 - [ ] Spec of the schedule format (StragglerMatching / OneWayMatching / TwoWayMatching) and of the IR.
 - [ ] Parser from schedule output to IR JSON; check it reproduces `ir/n4.json`.
 - [ ] CPU simulator: every send has a matching receive in its round, no rank is used twice in a round,
