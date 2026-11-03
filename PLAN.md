@@ -18,8 +18,8 @@ and generated code for n=4 running on one node and passing the harness.
 
 ## Shared interfaces *(blocking, agree first)*
 
-- [ ] **IR format** (Wyatt proposes, everyone signs off). JSON with `n`, `num_chunks`, and a list of rounds,
-      each a list of ops `{"src": int, "dst": int, "chunk": int, "op": "add" | "copy"}`.
+- [X] **IR format** (Wyatt proposes, everyone signs off). JSON with `n`, `num_chunks`, and a list of rounds,
+      each a list of ops `{"src": int, "dst": int, "chunk": int, "op": "add" | "write"}`.
 - [ ] **Generated-code entry point** (David proposes, Aneesh signs off). For the midpoint, use the same
       single-process style as `stragglar/stragglar/allreduce_4GPU.cu` (one process, all GPUs, `ncclCommInitAll`), e.g.
       `void gen_stragglar_allreduce(float** d_buffers, float** d_tempbufs, int* devs, cudaStream_t* streams, ncclComm_t* comms, int numRanks, size_t chunkSize)`.
@@ -28,7 +28,7 @@ and generated code for n=4 running on one node and passing the harness.
 ## Wyatt: schedules, parser, IR, simulator, ReduceScatter phase
 
 By Thu Nov 5:
-- [ ] *(blocking)* Hand-write `ir/n4.json` from the n=4 schedule and push it, so David can start before the parser exists.
+- [X] *(blocking)* Hand-write `ir/n4.json` from the n=4 schedule and push it, so David can start before the parser exists.
 - [ ] Run `synthesizer_pow2.py` for n = 4, 8, 16 and commit the outputs to `schedules/` (needs only `numpy`).
 - [ ] Spec of the schedule format (StragglerMatching / OneWayMatching / TwoWayMatching) and of the IR.
 - [ ] Parser from schedule output to IR JSON; check it reproduces `ir/n4.json`.
