@@ -67,7 +67,7 @@ By Thu Nov 5:
 
 By Sat Nov 7:
 - [ ] Poster panel: experimental setup and system details.
-- [ ] Stretch: the send/recv test on 8 GPUs across 2 nodes.
+- [X] Stretch: the send/recv test on 8 GPUs across 2 nodes.
 
 ## Aneesh: test harness
 
