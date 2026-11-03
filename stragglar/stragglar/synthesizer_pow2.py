@@ -134,7 +134,9 @@ def get_active_chunk_sets(gpus, round_id):
     return active_chunks
 
 def find_matching_opt(gpus, available, round_id):
-    assert sum(available) > 0, "available_gpus must not be empty"
+    # every GPU can already be busy this round (e.g. n=4, round 1)
+    if sum(available) == 0:
+        return []
     assert sum(available) % 2 == 0, "available_gpus must be even"
     n = len(gpus)
     logn = math.ceil(np.log2(n))
