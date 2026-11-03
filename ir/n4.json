@@ -1,0 +1,28 @@
+{
+  "v": 1,
+  "n": 4,
+  "straggler": 3,
+  "source": "schedules/n4.txt",
+  "rounds": [
+    [
+      {"src": 0, "dst": 3, "chunk": 0, "op": "add"},
+      {"src": 3, "dst": 0, "chunk": 0, "op": "add"}
+    ],
+    [
+      {"src": 1, "dst": 3, "chunk": 1, "op": "add"},
+      {"src": 3, "dst": 1, "chunk": 1, "op": "add"},
+      {"src": 0, "dst": 2, "chunk": 0, "op": "write"}
+    ],
+    [
+      {"src": 2, "dst": 3, "chunk": 2, "op": "add"},
+      {"src": 3, "dst": 2, "chunk": 2, "op": "add"},
+      {"src": 0, "dst": 1, "chunk": 0, "op": "write"},
+      {"src": 1, "dst": 0, "chunk": 1, "op": "write"}
+    ],
+    [
+      {"src": 0, "dst": 2, "chunk": 1, "op": "write"},
+      {"src": 2, "dst": 0, "chunk": 2, "op": "write"},
+      {"src": 3, "dst": 1, "chunk": 2, "op": "write"}
+    ]
+  ]
+}
