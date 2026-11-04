@@ -26,7 +26,7 @@ and generated code for n=4 running on one node and passing the harness.
       This keeps multi-process NCCL off the midpoint critical path; it only matters for 2 nodes.
       Final signature and calling rules: `gen/gen_stragglar.h`.
 
-## Wyatt: schedules, parser, IR, simulator, ReduceScatter phase
+## Wyatt: schedules, parser, IR, simulator
 
 By Thu Nov 5:
 - [X] *(blocking)* Hand-write `ir/n4.json` from the n=4 schedule and push it, so David can start before the parser exists.
@@ -35,8 +35,6 @@ By Thu Nov 5:
 - [X] Parser from schedule output to IR JSON; check it reproduces `ir/n4.json`.
 - [X] CPU simulator (`compiler/simulate.py`) that checks the IR: no rank sends or receives twice in a round,
       nothing is summed twice, and every GPU ends with the full sum. Run it on n = 4, 8, 16.
-- [ ] ReduceScatter phase before the schedule (sub-communicator without the straggler), reusing
-      `stragglar/stragglar/reducescatter.cu`. Hand it to David to prepend to the generated code.
 
 By Sat Nov 7:
 - [ ] Poster panel: problem, StragglAR background, correctness checking (simulator results).
@@ -74,6 +72,9 @@ By Sat Nov 7:
 By Thu Nov 5:
 - [ ] Harness adapted from the repo's timing code: buffer init (`fill_pattern`), `ncclAllReduce` as the reference,
       correctness check, timing loop.
+- [ ] ReduceScatter among ranks 0..n−2 before calling `gen_stragglar_allreduce` (see `gen/gen_stragglar.h`),
+      as `stragglar_allreduce_delay` in `stragglar/stragglar/allreduce_4GPU.cu` does: a sub-communicator
+      without the straggler, then `ncclReduceScatter`. Without it the result won't match `ncclAllReduce`.
 - [ ] Straggler delay injection on rank n−1 (the repo's `gpu_sleep_kernel`), with the same delay applied to
       `ncclAllReduce` and to our program.
 - [ ] Harness runs on Perlmutter with `ncclAllReduce` alone, using Nathnael's Slurm script; also run the repo's
