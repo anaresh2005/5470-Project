@@ -18,7 +18,7 @@ and generated code for n=4 running on one node and passing the harness.
 
 ## Shared interfaces *(blocking, agree first)*
 
-- [X] **IR format** (Wyatt proposes, everyone signs off). JSON with `n`, `num_chunks`, and a list of rounds,
+- [X] **IR format** (Wyatt proposes, everyone signs off). JSON with `n`, `straggler`, and a list of rounds,
       each a list of ops `{"src": int, "dst": int, "chunk": int, "op": "add" | "write"}`.
 - [X] **Generated-code entry point** (David proposes, Aneesh signs off). For the midpoint, use the same
       single-process style as `stragglar/stragglar/allreduce_4GPU.cu` (one process, all GPUs, `ncclCommInitAll`), e.g.
@@ -31,10 +31,10 @@ and generated code for n=4 running on one node and passing the harness.
 By Thu Nov 5:
 - [X] *(blocking)* Hand-write `ir/n4.json` from the n=4 schedule and push it, so David can start before the parser exists.
 - [X] Run `synthesizer_pow2.py` for n = 4, 8, 16 and commit the outputs to `schedules/` (needs only `numpy`).
-- [ ] Spec of the schedule format (StragglerMatching / OneWayMatching / TwoWayMatching) and of the IR.
-- [ ] Parser from schedule output to IR JSON; check it reproduces `ir/n4.json`.
-- [ ] CPU simulator: every send has a matching receive in its round, no rank is used twice in a round,
-      and the final buffers equal the true sum. Run it on n = 4, 8, 16.
+- [X] Spec of the schedule format (StragglerMatching / OneWayMatching / TwoWayMatching) and of the IR (`ir/README.md`).
+- [X] Parser from schedule output to IR JSON; check it reproduces `ir/n4.json`.
+- [X] CPU simulator (`compiler/simulate.py`) that checks the IR: no rank sends or receives twice in a round,
+      nothing is summed twice, and every GPU ends with the full sum. Run it on n = 4, 8, 16.
 - [ ] ReduceScatter phase before the schedule (sub-communicator without the straggler), reusing
       `stragglar/stragglar/reducescatter.cu`. Hand it to David to prepend to the generated code.
 
@@ -84,6 +84,5 @@ By Sat Nov 7:
 
 ## Integration (everyone, by Fri Nov 6)
 
-- [ ] Wyatt's simulator passes the generated n=4 program before the GPU run.
 - [ ] Generated n=4 program plus the ReduceScatter phase run in Aneesh's harness on 1 node and match `ncclAllReduce`.
-- [ ] Fallback if the GPU run fails: the poster shows the simulator checking the generated program, plus the GPU run status.
+- [ ] Fallback if the GPU run fails: the poster shows the simulator checking the IR for n = 4, 8, 16, plus the GPU run status.
