@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "n": 8,
+  "straggler": 7,
+  "source": "schedules/n8.txt",
+  "rounds": [
+    [
+      {"src": 0, "dst": 7, "chunk": 0, "op": "add"},
+      {"src": 7, "dst": 0, "chunk": 0, "op": "add"}
+    ],
+    [
+      {"src": 1, "dst": 7, "chunk": 1, "op": "add"},
+      {"src": 7, "dst": 1, "chunk": 1, "op": "add"},
+      {"src": 0, "dst": 3, "chunk": 0, "op": "write"}
+    ],
+    [
+      {"src": 2, "dst": 7, "chunk": 2, "op": "add"},
+      {"src": 7, "dst": 2, "chunk": 2, "op": "add"},
+      {"src": 1, "dst": 4, "chunk": 1, "op": "write"},
+      {"src": 0, "dst": 5, "chunk": 0, "op": "write"},
+      {"src": 3, "dst": 6, "chunk": 0, "op": "write"}
+    ],
+    [
+      {"src": 3, "dst": 7, "chunk": 3, "op": "add"},
+      {"src": 7, "dst": 3, "chunk": 3, "op": "add"},
+      {"src": 4, "dst": 0, "chunk": 1, "op": "write"},
+      {"src": 0, "dst": 4, "chunk": 0, "op": "write"},
+      {"src": 5, "dst": 1, "chunk": 0, "op": "write"},
+      {"src": 1, "dst": 5, "chunk": 1, "op": "write"},
+      {"src": 6, "dst": 2, "chunk": 0, "op": "write"},
+      {"src": 2, "dst": 6, "chunk": 2, "op": "write"}
+    ],
+    [
+      {"src": 4, "dst": 7, "chunk": 4, "op": "add"},
+      {"src": 7, "dst": 4, "chunk": 4, "op": "add"},
+      {"src": 5, "dst": 2, "chunk": 1, "op": "write"},
+      {"src": 2, "dst": 5, "chunk": 2, "op": "write"},
+      {"src": 6, "dst": 0, "chunk": 2, "op": "write"},
+      {"src": 0, "dst": 6, "chunk": 1, "op": "write"},
+      {"src": 1, "dst": 3, "chunk": 1, "op": "write"},
+      {"src": 3, "dst": 1, "chunk": 3, "op": "write"}
+    ],
+    [
+      {"src": 5, "dst": 7, "chunk": 5, "op": "add"},
+      {"src": 7, "dst": 5, "chunk": 5, "op": "add"},
+      {"src": 6, "dst": 1, "chunk": 2, "op": "write"},
+      {"src": 1, "dst": 6, "chunk": 3, "op": "write"},
+      {"src": 0, "dst": 3, "chunk": 2, "op": "write"},
+      {"src": 3, "dst": 0, "chunk": 3, "op": "write"},
+      {"src": 2, "dst": 4, "chunk": 2, "op": "write"},
+      {"src": 4, "dst": 2, "chunk": 4, "op": "write"}
+    ],
+    [
+      {"src": 6, "dst": 7, "chunk": 6, "op": "add"},
+      {"src": 7, "dst": 6, "chunk": 6, "op": "add"},
+      {"src": 0, "dst": 2, "chunk": 3, "op": "write"},
+      {"src": 2, "dst": 0, "chunk": 4, "op": "write"},
+      {"src": 1, "dst": 4, "chunk": 3, "op": "write"},
+      {"src": 4, "dst": 1, "chunk": 4, "op": "write"},
+      {"src": 3, "dst": 5, "chunk": 3, "op": "write"},
+      {"src": 5, "dst": 3, "chunk": 5, "op": "write"}
+    ],
+    [
+      {"src": 0, "dst": 3, "chunk": 4, "op": "write"},
+      {"src": 3, "dst": 0, "chunk": 5, "op": "write"},
+      {"src": 1, "dst": 5, "chunk": 4, "op": "write"},
+      {"src": 5, "dst": 1, "chunk": 5, "op": "write"},
+      {"src": 2, "dst": 6, "chunk": 4, "op": "write"},
+      {"src": 6, "dst": 2, "chunk": 6, "op": "write"},
+      {"src": 7, "dst": 4, "chunk": 6, "op": "write"}
+    ],
+    [
+      {"src": 0, "dst": 2, "chunk": 5, "op": "write"},
+      {"src": 2, "dst": 0, "chunk": 6, "op": "write"},
+      {"src": 1, "dst": 4, "chunk": 5, "op": "write"},
+      {"src": 4, "dst": 1, "chunk": 6, "op": "write"},
+      {"src": 3, "dst": 6, "chunk": 5, "op": "write"},
+      {"src": 6, "dst": 3, "chunk": 6, "op": "write"},
+      {"src": 7, "dst": 5, "chunk": 6, "op": "write"}
+    ]
+  ]
+}

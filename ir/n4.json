@@ -1,5 +1,5 @@
 {
-  "v": 1,
+  "version": 1,
   "n": 4,
   "straggler": 3,
   "source": "schedules/n4.txt",
