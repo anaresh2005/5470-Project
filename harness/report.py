@@ -83,7 +83,7 @@ def write_report(rows, out, plots=False):
     summaries = summarize(rows)
     for name, data in [('samples.csv', rows), ('summary.csv', summaries)]:
         with (out / name).open('w', newline='') as f:
-            writer = csv.DictWriter(f, fieldnames=list(data[0]))
+            writer = csv.DictWriter(f, fieldnames=list(data[0]), lineterminator="\n")
             writer.writeheader(); writer.writerows(data)
     generated = [s for s in summaries if s['algorithm'] == 'generated']
     panel = ['RESULTS — FOUR-GPU TEST HARNESS', '',
@@ -114,15 +114,18 @@ def write_report(rows, out, plots=False):
         for (size, gpu, seed), samples in datasets.items():
             fig, axes = plt.subplots(1, 2, figsize=(10, 4), constrained_layout=True)
             for algorithm in ('nccl', 'handwritten', 'generated'):
+                color = {'nccl': '#3366AA', 'handwritten': '#DD8833', 'generated': '#087F8C'}[algorithm]
                 vals = sorted([s for s in samples if s['algorithm'] == algorithm], key=lambda s: s['delay_ms'])
                 if not vals:
                     continue
+                if len({s['delay_ms'] for s in vals}) != len(vals):
+                    raise ValueError('Select one sweep for plots: repeated delay cases found')
                 x = [s['delay_ms'] for s in vals]; y = [s['median_ms'] for s in vals]
                 axes[0].errorbar(x, y, yerr=[[s['median_ms'] - s['min_ms'] for s in vals],
-                                           [s['max_ms'] - s['median_ms'] for s in vals]], marker='o', label=algorithm)
+                                           [s['max_ms'] - s['median_ms'] for s in vals]], marker='o', color=color, label=algorithm)
                 vals = [s for s in vals if s['median_paired_speedup'] != '']
                 if algorithm != 'nccl' and vals:
-                    axes[1].plot([s['delay_ms'] for s in vals], [s['median_paired_speedup'] for s in vals], marker='o', label=algorithm)
+                    axes[1].plot([s['delay_ms'] for s in vals], [s['median_paired_speedup'] for s in vals], marker='o', color=color, label=algorithm)
             axes[0].set_ylabel('Median end-to-end latency (ms); range bars')
             axes[1].set_ylabel('Median paired speedup vs. NCCL')
             axes[1].axhline(1, color='gray', linestyle='--')

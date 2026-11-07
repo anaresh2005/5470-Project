@@ -1,104 +1,72 @@
-# Aneesh's n=4 harness
+# Test harness
 
-This implements the midpoint responsibilities in `PLAN.md`. One process drives
-four GPUs; the generated entry point is unchanged. The upstream handwritten
-source and David's generator are not edited.
+The midpoint harness compares NCCL AllReduce, the handwritten n=4 StragglAR
+implementation, and the generated n=4 code. It uses one process and four GPUs.
+The generator and handwritten source are unchanged.
 
-## Build and run on Perlmutter
+## Run
+
+On Perlmutter, from the repo root:
 
 ```bash
 source scripts/env.sh
 make harness
-# Uses Nathnael's existing launcher; defaults to five warmups and slow GPU 3.
 sbatch --export=ALL,BIN=build/harness4 scripts/run_1node.sbatch 12582912 all 10 1
-# Full sweep, including physical GPU 0 as the straggler:
-sbatch scripts/run_harness.sbatch
+sbatch scripts/run_harness.sbatch  # full sweep
 ```
 
-Run inside an allocation, never on the login node:
+Inside an allocation:
 
 ```bash
-build/harness4 12582912 all 10 1 5 3 5470
+build/harness4 bytes algorithm iterations delay_ms [warmups=5] [slow_gpu=3] [seed=5470]
 ```
 
-Arguments: `bytes algorithm iterations delay_ms [warmups=5]
-[physical_straggler=3] [seed=5470]`. Algorithms: `nccl`, `handwritten`,
-`generated`, `all`; `stragglar` is an alias for `handwritten` for launcher
-compatibility. Bytes must be a positive multiple of 12 (48 also works).
-`-1` is accepted as zero delay for the existing launcher, but the ReduceScatter
-phase is **always** performed. Zero warmups is supported for smoke testing;
-use at least five for reported performance.
+Algorithms: `nccl`, `handwritten`, `generated`, or `all`. `stragglar` aliases
+`handwritten`. Bytes must be positive and divisible by 12; the team's multiple
+of 48 works. Delay `-1` means zero delay, but still runs ReduceScatter.
 
-The sweep defaults to 12 KiB, 12 MiB, and 48 MiB per GPU, delays 0/1/5 ms,
-physical stragglers 3/0, five warmups and ten measured samples per algorithm.
-Override `SIZES`, `DELAYS`, `STRAGGLERS`, `ITERS`, `WARMUPS`, `SEED`, or `OUT`
-through the job environment. Job walltime bounds deadlock experiments.
-Each completed case is kept even if a later case fails. Report completed logs
-explicitly; never report a truncated log as success.
+The sweep uses 12 KiB, 12 MiB and 48 MiB per GPU; delays 0/1/5 ms; slow GPUs 3/0;
+five warmups and ten samples per algorithm. Override `SIZES`, `DELAYS`,
+`STRAGGLERS`, `ITERS`, `WARMUPS`, `SEED`, or `OUT` in the job environment.
+Raw logs and machine details are saved under `results/gpu-<timestamp>/`.
 
-## Correctness and timing
+## Method
 
-- Deterministic signed inputs vary with physical GPU, element index, and seed.
-  Their small binary fractions sum exactly in float32 for four GPUs. This catches
-  offset/copy errors that uniform rank constants can hide. Use several seeds for
-  additional coverage; arbitrary real-valued reduction accuracy is not established.
-- NCCL AllReduce first produces a reference. Every element on every rank is
-  checked against an independent CPU sum.
-- Inputs and scratch are reset before **every** invocation. Every warmup and
-  measured result is checked on all four GPUs against the NCCL reference.
-  NaN/Inf and mismatches fail the process; tolerance is `1e-5 + 1e-5*abs(ref)`.
-- The slow physical device is swapped to logical rank 3. The subcommunicator
-  uses exactly `devs[0:3]`, excluding it. This is a single-process device mapping;
-  it does not implement the team's future multi-process remap.
-- Before generated or handwritten code, in-place `ncclReduceScatter` writes
-  rank r's sum to `buffers[r] + r*chunk`. Non-straggler streams finish before
-  switching from the subcommunicator to the full communicator. This work can
-  overlap the slow GPU's delay. See [NVIDIA's in-place convention](https://github.com/NVIDIA/nccl/blob/master/docs/userguide/source/api/colls.rst).
-- A clock64 spin kernel delays logical rank 3 by the same nominal duration for
-  all algorithms. Cycles use the device's reported clock rate; actual delay may
-  vary with GPU clocks. The upstream clock-based method is retained with a
-  wider counter. No nominal delay is subtracted from measured runtime.
-- Host steady-clock timing starts before delay injection and ends after all
-  streams complete. It includes launch overhead, delay, ReduceScatter and the
-  full collective. Buffer setup and host correctness copies are excluded.
-  Algorithm order rotates across iterations to reduce ordering bias.
-- The handwritten baseline calls the upstream helper verbatim and therefore
-  includes its original internal synchronization and event behavior. It is a
-  baseline, not a claim that the handwritten and generated launch paths are
-  identical. Its event setup is amortized by warmup.
+- Inputs vary by GPU, element and seed. Their binary fractions sum exactly in
+  float32. Buffers reset before every run.
+- NCCL is checked against a CPU sum. Every warmup and timed output is checked
+  on all four GPUs against NCCL. NaN/Inf or an error above
+  `1e-5 + 1e-5*abs(reference)` fails the run.
+- The chosen slow GPU becomes logical rank 3. ReduceScatter uses only ranks
+  0..2 and writes chunk r at `buffers[r] + r*chunkSize`. Those streams finish
+  before switching communicators. This work overlaps the slow GPU's delay.
+- The same clock64 delay runs on logical rank 3 for each algorithm. Delay is
+  nominal because GPU clocks can vary. No delay is subtracted from timing.
+- Host timing includes delay, ReduceScatter, communication and completion of
+  every stream. Input setup and validation are excluded. Algorithm order rotates
+  each iteration. The handwritten baseline retains its original internal syncs.
 
-## Retained evidence and plots
+This is a single-node device remap, not the final multi-process implementation.
+Small timing differences need repeated trials. These inputs do not establish
+accuracy for arbitrary real-valued reductions.
 
-`results/gpu-<UTC timestamp>/` contains raw case logs, commit, dirty-worktree
-status, GPU/driver details and runtime versions. The raw output contains one
-`RESULT` row per validated timing sample, plus reference and completion markers.
-The entire `results/` directory is intended to be retained with the submission;
-`logs/` is ignored by the original repo.
+## Results and checks
 
 ```bash
 python3 harness/report.py results/gpu-*/b*.log --out results/summary --plots
-```
-
-The summary needs only Python's standard library. `--plots` additionally needs
-matplotlib and produces PNG/PDF latency and speedup plots. Speedup is the median
-of iteration-paired `nccl_ms / candidate_ms` within the **same case log**; timings
-from different jobs are never paired. Raw timings, min/median/max and maximum
-absolute error are retained in CSVs. `poster_results.txt` contains the measured
-results panel. A missing timed NCCL baseline produces no speedup claim.
-
-## Local checks (no GPU required)
-
-```bash
+python3 harness/poster.py results/summary/summary.csv results/summary/poster_results.pdf
 python3 -m unittest discover -s harness -p 'test_*.py' -v
 c++ -std=c++17 harness/test_validation.cpp -o /tmp/test_validation
 /tmp/test_validation
 python3 compiler/simulate.py ir/n4.json ir/n8.json ir/n16.json
-bash -n scripts/sweep_harness.sh scripts/run_harness.sbatch
 ```
 
-These checks do not establish CUDA compilation, NCCL execution, or GPU speedup.
-The four-GPU harness does not complete the final two-node / eight-GPU milestone.
+Reports include raw samples, min/median/max latency, paired speedups and maximum
+error. Speedup is the median of `NCCL_ms / candidate_ms` for matching iterations
+in the same case. Incomplete logs are rejected. Select one sweep for plots and
+the 14 x 10 inch panel. Plots need matplotlib; the panel needs reportlab.
 
-AI assistance: OpenAI Codex assisted with harness implementation, result
-processing, documentation, and local validation. Retain actual GPU logs before
-claiming measured correctness or performance.
+Measured results and job evidence: [results/README.md](../results/README.md).
+The host tests alone do not establish GPU correctness or performance.
+
+AI assistance: Codex helped implement, test and document this work.

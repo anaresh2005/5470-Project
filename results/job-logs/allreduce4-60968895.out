@@ -1,0 +1,22 @@
+commit: 9bd1b8e
+job: 60968895 on nid001733
+run: build/harness4 12288 all 2 1
+GPU 0: NVIDIA A100-SXM4-40GB (UUID: GPU-cbec65a1-3f4b-2569-3dda-3ed8a2e65d33)
+GPU 1: NVIDIA A100-SXM4-40GB (UUID: GPU-0b8b7180-f10c-7090-fac8-7c7546415ec1)
+GPU 2: NVIDIA A100-SXM4-40GB (UUID: GPU-679a9d53-85cc-86a3-be76-f189bc66bf6f)
+GPU 3: NVIDIA A100-SXM4-40GB (UUID: GPU-db3e6b35-933b-9f48-cd76-6ea9d5e83df3)
+META,nccl=22902,cuda_runtime=13020,cuda_driver=13020,devices=0:1:2:3,clock_khz=1410000,seed=5470,warmups=5
+CHECK,reference_cpu,PASS
+kind,algorithm,bytes,iteration,delay_ms,physical_straggler,seed,runtime_ms,max_abs_error,correct
+RESULT,nccl,12288,0,1.000000,3,5470,1.029358000,0,PASS
+RESULT,handwritten,12288,0,1.000000,3,5470,1.117469000,0,PASS
+RESULT,generated,12288,0,1.000000,3,5470,1.059828000,0,PASS
+RESULT,handwritten,12288,1,1.000000,3,5470,1.123401000,0,PASS
+RESULT,generated,12288,1,1.000000,3,5470,1.060799000,0,PASS
+RESULT,nccl,12288,1,1.000000,3,5470,1.027064000,0,PASS
+Rank 0, done
+Rank 1, done
+Rank 2, done
+Rank 3, done
+PASS: every sample on all four ranks matches ncclAllReduce
+PASS: all ranks finished with correct values

@@ -1,0 +1,1 @@
+nvcc -std=c++17 -O3 -diag-suppress=177 -I/global/common/software/nersc9/nccl/2.29.2-cu13/include -o build/harness4 harness/allreduce.cu harness/handwritten.cu harness/generated.cu -L/global/common/software/nersc9/nccl/2.29.2-cu13/lib -lnccl

@@ -70,20 +70,30 @@ By Sat Nov 7:
 ## Aneesh: test harness
 
 By Thu Nov 5:
-- [ ] Harness adapted from the repo's timing code: buffer init (`fill_pattern`), `ncclAllReduce` as the reference,
+- [X] Harness adapted from the repo's timing code: buffer init (`fill_pattern`), `ncclAllReduce` as the reference,
       correctness check, timing loop.
-- [ ] ReduceScatter among ranks 0..n−2 before calling `gen_stragglar_allreduce` (see `gen/gen_stragglar.h`),
+- [X] ReduceScatter among ranks 0..n−2 before calling `gen_stragglar_allreduce` (see `gen/gen_stragglar.h`),
       as `stragglar_allreduce_delay` in `stragglar/stragglar/allreduce_4GPU.cu` does: a sub-communicator
       without the straggler, then `ncclReduceScatter`. Without it the result won't match `ncclAllReduce`.
-- [ ] Straggler delay injection on rank n−1 (the repo's `gpu_sleep_kernel`), with the same delay applied to
+- [X] Straggler delay injection on rank n−1 (the repo's `gpu_sleep_kernel`), with the same delay applied to
       `ncclAllReduce` and to our program.
-- [ ] Harness runs on Perlmutter with `ncclAllReduce` alone, using Nathnael's Slurm script; also run the repo's
+- [X] Harness runs on Perlmutter with `ncclAllReduce` alone, using Nathnael's Slurm script; also run the repo's
       hand-written StragglAR through it as a baseline.
 
 By Sat Nov 7:
-- [ ] Poster panel: results (correctness, and any n=4 timings vs. `ncclAllReduce`).
+- [X] Poster panel: results (correctness, and any n=4 timings vs. `ncclAllReduce`).
 
 ## Integration (everyone, by Fri Nov 6)
 
-- [ ] Generated n=4 program plus the ReduceScatter phase run in Aneesh's harness on 1 node and match `ncclAllReduce`.
+- [X] Generated n=4 program plus the ReduceScatter phase run in Aneesh's harness on 1 node and match `ncclAllReduce`.
 - [ ] Fallback if the GPU run fails: the poster shows the simulator checking the IR for n = 4, 8, 16, plus the GPU run status.
+
+## Aneesh results (Nov 7)
+
+Perlmutter jobs 60968895 and 60968954 passed. All 540 timed runs across 18 cases
+matched NCCL on every GPU, with zero maximum error. Generated code was slower
+than NCCL in this sweep (0.315x–0.994x). Performance tuning and the final
+8-GPU/two-node test remain.
+
+Code and commands: `harness/README.md`. Logs, plots and results panel:
+`results/gpu-20261107T173045Z/`.

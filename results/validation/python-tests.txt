@@ -1,0 +1,12 @@
+test_all_physical_stragglers_nonuniform_chunks_and_seeds (test_contract.ContractTests.test_all_physical_stragglers_nonuniform_chunks_and_seeds) ... ok
+test_missing_reducescatter_is_detected (test_contract.ContractTests.test_missing_reducescatter_is_detected) ... ok
+test_no_pairing_across_files (test_report.ReportTests.test_no_pairing_across_files) ... ok
+test_no_speedup_without_timed_reference (test_report.ReportTests.test_no_speedup_without_timed_reference) ... ok
+test_paired_speedup_and_report (test_report.ReportTests.test_paired_speedup_and_report) ... ok
+test_reject_incomplete_failed_nonfinite_duplicate (test_report.ReportTests.test_reject_incomplete_failed_nonfinite_duplicate) ... ok
+test_unpaired_samples_fail (test_report.ReportTests.test_unpaired_samples_fail) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.025s
+
+OK
