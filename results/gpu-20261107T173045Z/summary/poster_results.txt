@@ -1,0 +1,31 @@
+RESULTS — FOUR-GPU TEST HARNESS
+
+Validated 540 measured runs against NCCL AllReduce on all four ranks.
+The NCCL reference also passed an independent CPU sum check.
+Inputs vary by GPU and element; buffers reset before every run.
+Timing includes injected delay, ReduceScatter, communication, and synchronization.
+Initialization and result checking are outside the timed region.
+
+Generated program (median of paired NCCL / generated runtime ratios):
+  12288 bytes/GPU; nominal delay 0 ms; slow GPU 0: 0.154 ms, speedup 0.337x, 10 samples.
+  12288 bytes/GPU; nominal delay 0 ms; slow GPU 3: 0.179 ms, speedup 0.315x, 10 samples.
+  12288 bytes/GPU; nominal delay 1 ms; slow GPU 0: 1.062 ms, speedup 0.970x, 10 samples.
+  12288 bytes/GPU; nominal delay 1 ms; slow GPU 3: 1.062 ms, speedup 0.970x, 10 samples.
+  12288 bytes/GPU; nominal delay 5 ms; slow GPU 0: 5.061 ms, speedup 0.994x, 10 samples.
+  12288 bytes/GPU; nominal delay 5 ms; slow GPU 3: 5.061 ms, speedup 0.994x, 10 samples.
+  12582912 bytes/GPU; nominal delay 0 ms; slow GPU 0: 0.733 ms, speedup 0.355x, 10 samples.
+  12582912 bytes/GPU; nominal delay 0 ms; slow GPU 3: 0.714 ms, speedup 0.385x, 10 samples.
+  12582912 bytes/GPU; nominal delay 1 ms; slow GPU 0: 1.488 ms, speedup 0.806x, 10 samples.
+  12582912 bytes/GPU; nominal delay 1 ms; slow GPU 3: 1.449 ms, speedup 0.827x, 10 samples.
+  12582912 bytes/GPU; nominal delay 5 ms; slow GPU 0: 5.489 ms, speedup 0.947x, 10 samples.
+  12582912 bytes/GPU; nominal delay 5 ms; slow GPU 3: 5.451 ms, speedup 0.954x, 10 samples.
+  50331648 bytes/GPU; nominal delay 0 ms; slow GPU 0: 1.673 ms, speedup 0.328x, 10 samples.
+  50331648 bytes/GPU; nominal delay 0 ms; slow GPU 3: 1.679 ms, speedup 0.323x, 10 samples.
+  50331648 bytes/GPU; nominal delay 1 ms; slow GPU 0: 2.215 ms, speedup 0.661x, 10 samples.
+  50331648 bytes/GPU; nominal delay 1 ms; slow GPU 3: 2.216 ms, speedup 0.660x, 10 samples.
+  50331648 bytes/GPU; nominal delay 5 ms; slow GPU 0: 6.214 ms, speedup 0.879x, 10 samples.
+  50331648 bytes/GPU; nominal delay 5 ms; slow GPU 3: 6.218 ms, speedup 0.878x, 10 samples.
+
+Above 1x means faster than NCCL; below 1x means slower.
+Host-observed latency includes launch overhead. Delays are clock-based and nominal.
+Single-node results do not establish two-node performance or correctness.

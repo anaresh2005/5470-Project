@@ -1,0 +1,4 @@
+*.pdf binary
+*.png binary
+# Keep raw machine output unchanged.
+results/**/metadata.txt -whitespace

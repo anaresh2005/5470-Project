@@ -1,0 +1,2 @@
+mkdir -p build
+nvcc -std=c++17 -O3 -diag-suppress=177 -I/tmp/nccl/include -o build/harness4 harness/allreduce.cu harness/handwritten.cu harness/generated.cu -L/tmp/nccl/lib -lnccl

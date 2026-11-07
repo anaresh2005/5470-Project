@@ -1,0 +1,3 @@
+PASS ir/n4.json: n=4, 4 rounds, all GPUs hold the full sum
+PASS ir/n8.json: n=8, 9 rounds, all GPUs hold the full sum
+PASS ir/n16.json: n=16, 18 rounds, all GPUs hold the full sum

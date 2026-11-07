@@ -26,3 +26,11 @@ clean:
 	rm -rf build
 
 .PHONY: all clean
+
+# Aneesh's one-process / four-GPU correctness and timing harness.
+build/harness4: harness/allreduce.cu harness/handwritten.cu harness/generated.cu harness/common.h harness/validation.h gen/gen_n4.cu gen/gen_stragglar.h $(SRC_DIR)/allreduce_4GPU.cu
+	@mkdir -p build
+	$(NVCC) $(CXXFLAGS) -o $@ harness/allreduce.cu harness/handwritten.cu harness/generated.cu $(LDFLAGS) $(LDLIBS)
+
+harness: build/harness4
+.PHONY: harness

@@ -1,0 +1,1 @@
+PASS: host C++ numerical checks (input pattern, CPU sums, tolerance, non-finite rejection)
